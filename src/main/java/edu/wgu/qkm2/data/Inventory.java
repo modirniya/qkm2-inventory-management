@@ -7,9 +7,15 @@ public class Inventory {
     private final ObservableList<Part> allParts;
     private final ObservableList<Product> allProducts;
 
-    public Inventory() {
+    private Inventory() {
         this.allParts = FXCollections.observableArrayList();
         this.allProducts = FXCollections.observableArrayList();
+    }
+
+    private static final Inventory instance = new Inventory();
+
+    public static Inventory getInstance() {
+        return instance;
     }
 
     public void addPart(Part newPart) {
@@ -20,21 +26,21 @@ public class Inventory {
         this.allProducts.add(newProduct);
     }
 
-    public Part lockupPart(int partId) {
+    public Part lookupPart(int partId) {
         for (Part part : this.allParts)
             if (part.id == partId)
                 return part;
         return null;
     }
 
-    public Product lockupProduct(int productId) {
+    public Product lookupProduct(int productId) {
         for (Product product : this.allProducts)
             if (product.id == productId)
                 return product;
         return null;
     }
 
-    public ObservableList<Part> lockupPart(String partName) {
+    public ObservableList<Part> lookupPart(String partName) {
         if (partName.isBlank()) return this.allParts;
         ObservableList<Part> resultList = FXCollections.observableArrayList();
         for (Part part : this.allParts)
@@ -43,7 +49,7 @@ public class Inventory {
         return resultList;
     }
 
-    public ObservableList<Product> lockupProduct(String productName) {
+    public ObservableList<Product> lookupProduct(String productName) {
         if (productName.isBlank()) return this.allProducts;
         ObservableList<Product> resultList = FXCollections.observableArrayList();
         for (Product product : this.allProducts)

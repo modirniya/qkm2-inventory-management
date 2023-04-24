@@ -1,33 +1,56 @@
 package edu.wgu.qkm2.controller;
 
 import edu.wgu.qkm2.data.Part;
-import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class ProductController {
-    public Label lbTitle;
-    public TextField tfId;
-    public TextField tfName;
-    public TextField tfInventory;
-    public TextField tfPrice;
-    public TextField tfMax;
-    public TextField tfMin;
-    public Label lbError;
-    public TableView<Part> tvAllParts;
-    public TableView<Part> tvAssociatedParts;
-    public TextField tfSearchPart;
+    @FXML
+    private Label lbTitle;
+    @FXML
+    private Label lbError;
+    @FXML
+    private TextField tfId;
+    @FXML
+    private TextField tfName;
+    @FXML
+    private TextField tfInventory;
+    @FXML
+    private TextField tfPrice;
+    @FXML
+    private TextField tfMax;
+    @FXML
+    private TextField tfMin;
+    @FXML
+    private TextField tfSearchPart;
+    @FXML
+    private TableView<Part> tvAllParts;
+    @FXML
+    private TableView<Part> tvAssociatedParts;
 
-    public void removePart(ActionEvent actionEvent) {
+    public void updateUI(int targetProductIdx) {
+        if (targetProductIdx == -1) {
+            lbTitle.setText("Add Product");
+        } else {
+            lbTitle.setText("Modify Product");
+        }
     }
 
-    public void addPart(ActionEvent actionEvent) {
+    @FXML
+    private void removePart() {
     }
 
-    public void cancel(ActionEvent actionEvent) {
+    @FXML
+    private void addPart() {
     }
 
-    public void save(ActionEvent actionEvent) {
+    @FXML
+    private void cancel() {
+    }
+
+    @FXML
+    private void save() {
     }
 }

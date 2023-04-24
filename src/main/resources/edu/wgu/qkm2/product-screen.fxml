@@ -109,8 +109,16 @@
                                         <PropertyValueFactory property="name"/>
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn editable="false" prefWidth="100.0" text="Inventory Level"/>
-                                <TableColumn editable="false" prefWidth="150.0" text="Price / Cost per Unit"/>
+                                <TableColumn editable="false" prefWidth="100.0" text="Inventory Level">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="stock"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn editable="false" prefWidth="150.0" text="Price / Cost per Unit">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="price"/>
+                                    </cellValueFactory>
+                                </TableColumn>
                             </columns>
                         </TableView>
                         <Label text="All Parts" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0">
@@ -141,8 +149,16 @@
                                         <PropertyValueFactory property="name"/>
                                     </cellValueFactory>
                                 </TableColumn>
-                                <TableColumn editable="false" prefWidth="100.0" text="Inventory Level"/>
-                                <TableColumn editable="false" prefWidth="150.0" text="Price / Cost per Unit"/>
+                                <TableColumn editable="false" prefWidth="100.0" text="Inventory Level">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="stock"/>
+                                    </cellValueFactory>
+                                </TableColumn>
+                                <TableColumn editable="false" prefWidth="150.0" text="Price / Cost per Unit">
+                                    <cellValueFactory>
+                                        <PropertyValueFactory property="price"/>
+                                    </cellValueFactory>
+                                </TableColumn>
                             </columns>
                         </TableView>
                         <Label text="Associated Parts" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="12.0">
