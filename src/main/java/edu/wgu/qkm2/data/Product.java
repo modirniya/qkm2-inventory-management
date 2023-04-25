@@ -23,15 +23,15 @@ public class Product {
     }
 
     public void addAssociatedPart(Part part) {
-
+        this.associatedParts.add(part);
     }
 
     public boolean deleteAssociatedPart(Part selectedAssociatedPart) {
-        return true;
+        return this.associatedParts.remove(selectedAssociatedPart);
     }
 
     public ObservableList<Part> getAllAssociatedParts() {
-        return null;
+        return this.associatedParts;
     }
 
     public int getId() {
