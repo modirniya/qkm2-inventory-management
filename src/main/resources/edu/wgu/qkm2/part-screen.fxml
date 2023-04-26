@@ -44,7 +44,7 @@
         </rowConstraints>
         <Label text="ID" GridPane.rowIndex="1"/>
         <Label text="Name" GridPane.rowIndex="2"/>
-        <Label text="Inv." GridPane.rowIndex="3"/>
+        <Label text="Inventory" GridPane.rowIndex="3"/>
         <Label text="Price" GridPane.rowIndex="4"/>
         <Label text="Max" GridPane.rowIndex="5"/>
         <Label text="Min" GridPane.rowIndex="6"/>

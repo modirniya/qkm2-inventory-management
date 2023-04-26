@@ -44,6 +44,19 @@ public class ProductController implements Initializable {
     private double price;
     private ObservableList<Part> associatedParts;
 
+    /**
+     * This method initializes the controller class when the FXML is loaded.
+     * It sets up a listener on the TextField tfSearchPart to filter the parts in the TableView tvAllParts
+     * based on the search query entered by the user. The listener is triggered whenever the text in the
+     * TextField changes. The method tries to parse the entered value as an integer, and if successful,
+     * searches for a part with the matching ID. If the entered value is not an integer, it searches for
+     * parts with matching names.
+     *
+     * @param url            The location used to resolve relative paths for the root object, or null if the
+     *                       location is not known.
+     * @param resourceBundle The resources used to localize the root object, or null if the
+     *                       root object was not localized.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -59,6 +72,14 @@ public class ProductController implements Initializable {
         });
     }
 
+    /**
+     * This method is called when the user clicks on the "Save" button. It first checks if the entered
+     * values in the form are valid by calling the areEntriesValid() method. If the values are valid,
+     * it creates a new Product instance and assigns the associated parts from the tvAssociatedParts
+     * TableView to the Product. If the currentProductIdx is -1, the method adds the new product to
+     * the inventory; otherwise, it updates the existing product in the inventory. Finally, it clears
+     * the associated parts list and closes the stage.
+     */
     @FXML
     private void save() {
         if (areEntriesValid()) {
@@ -75,11 +96,19 @@ public class ProductController implements Initializable {
         }
     }
 
+    /**
+     * This method closes the current stage when the user clicks the "Cancel" button.
+     * It is triggered by an FXML action and calls the closeStage() method to close the window (Product screen).
+     */
     @FXML
     private void cancel() {
         closeStage();
     }
 
+    /**
+     * This method adds a selected part from the tvAllParts TableView to the tvAssociatedParts TableView.
+     * It is triggered by an FXML action when the user clicks the "Add" button.
+     */
     @FXML
     private void addPart() {
         var part = tvAllParts.getSelectionModel().getSelectedItem();
@@ -87,6 +116,10 @@ public class ProductController implements Initializable {
             tvAssociatedParts.getItems().add(part);
     }
 
+    /**
+     * This method removes a selected part from the tvAssociatedParts TableView.
+     * It is triggered by an FXML action when the user clicks the "Remove" button.
+     */
     @FXML
     private void removePart() {
         var part = tvAssociatedParts.getSelectionModel().getSelectedItem();
@@ -94,11 +127,21 @@ public class ProductController implements Initializable {
             tvAssociatedParts.getItems().remove(part);
     }
 
+    /**
+     * This method closes the current stage (window) of the application.
+     */
     private void closeStage() {
         Stage stage = (Stage) tfName.getScene().getWindow();
         stage.close();
     }
 
+    /**
+     * This method updates the UI based on the given target product index.
+     * If the target product index is -1, it sets up the UI for adding a new product.
+     * Otherwise, it sets up the UI for modifying the existing product at the specified index.
+     *
+     * @param targetProductIdx The index of the target product to update, or -1 for adding a new product.
+     */
     public void updateUI(int targetProductIdx) {
         clearAllFields();
         tvAllParts.setItems(inventory.getAllParts());
@@ -113,6 +156,11 @@ public class ProductController implements Initializable {
         tvAssociatedParts.setItems(associatedParts);
     }
 
+    /**
+     * This method clears all the text fields and resets the associated parts list, error label,
+     * and current product index. It is used to prepare the UI for a new product entry or to
+     * reset the UI after modifying an existing product.
+     */
     private void clearAllFields() {
         tfId.clear();
         tfName.clear();
@@ -125,6 +173,11 @@ public class ProductController implements Initializable {
         currentProductIdx = -1;
     }
 
+    /**
+     * This method populates all the text fields and associated parts list based on the selected product.
+     * It retrieves the product from the inventory using the currentProductIdx and sets the text fields
+     * for ID, name, price, inventory, min, and max, as well as populating the associated parts list.
+     */
     private void populateAllFields() {
         var product = inventory.getAllProducts().get(currentProductIdx);
         tfId.setText(String.valueOf(product.getId()));
@@ -136,6 +189,13 @@ public class ProductController implements Initializable {
         associatedParts.addAll(product.getAllAssociatedParts());
     }
 
+    /**
+     * This method checks the validity of the text field entries and sets error messages accordingly.
+     * It validates the name, price, inventory, min, max, and machine ID or company name fields,
+     * depending on the part type (in-house or outsourced).
+     *
+     * @return true if all entries are valid, otherwise false
+     */
     private boolean areEntriesValid() {
         String errorPrompt = "";
         id = Integer.parseInt(tfId.getText());
@@ -167,6 +227,12 @@ public class ProductController implements Initializable {
         return errorPrompt.isBlank();
     }
 
+    /**
+     * This method calculates and returns the next available ID for a new product.
+     * It finds the last product in the inventory and increments its ID by 1 to ensure uniqueness.
+     *
+     * @return the next available ID for a new product
+     */
     private int getAvailableId() {
         var size = inventory.getAllProducts().size();
         var lastElement = inventory.getAllProducts().get(size - 1);
