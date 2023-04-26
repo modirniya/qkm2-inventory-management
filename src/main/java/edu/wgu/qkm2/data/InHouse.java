@@ -1,5 +1,8 @@
 package edu.wgu.qkm2.data;
 
+/**
+ * @author Parham Modirniya
+ */
 public class InHouse extends Part {
     private int machineId;
 

@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * @author Parham Modirniya
+ */
 public class InventoryApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {

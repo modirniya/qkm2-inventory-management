@@ -2,6 +2,9 @@ package edu.wgu.qkm2;
 
 import edu.wgu.qkm2.data.*;
 
+/**
+ * @author Parham Modirniya
+ */
 public class InventorySampleDataPopulator {
     /**
      * Adds sample data to the inventory. This method creates an array of parts and an array of products,

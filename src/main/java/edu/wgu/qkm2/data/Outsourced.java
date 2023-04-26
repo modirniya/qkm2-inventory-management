@@ -1,5 +1,8 @@
 package edu.wgu.qkm2.data;
 
+/**
+ * @author Parham Modirniya
+ */
 public class Outsourced extends Part {
     private String companyName;
 

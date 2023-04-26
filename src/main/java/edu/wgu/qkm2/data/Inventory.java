@@ -3,6 +3,9 @@ package edu.wgu.qkm2.data;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+/**
+ * @author Parham Modirniya
+ */
 public class Inventory {
     private final ObservableList<Part> allParts;
     private final ObservableList<Product> allProducts;

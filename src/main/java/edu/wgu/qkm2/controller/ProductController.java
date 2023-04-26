@@ -15,6 +15,9 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * @author Parham Modirniya
+ */
 public class ProductController implements Initializable {
     @FXML
     private Label lbTitle;

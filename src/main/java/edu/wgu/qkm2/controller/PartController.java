@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * @author Parham Modirniya
+ */
 public class PartController implements Initializable {
 
     @FXML
