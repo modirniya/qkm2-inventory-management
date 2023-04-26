@@ -28,14 +28,14 @@ public class Inventory {
 
     public Part lookupPart(int partId) {
         for (Part part : this.allParts)
-            if (part.id == partId)
+            if (part.getId() == partId)
                 return part;
         return null;
     }
 
     public Product lookupProduct(int productId) {
         for (Product product : this.allProducts)
-            if (product.id == productId)
+            if (product.getId() == productId)
                 return product;
         return null;
     }
@@ -44,7 +44,7 @@ public class Inventory {
         if (partName.isBlank()) return this.allParts;
         ObservableList<Part> resultList = FXCollections.observableArrayList();
         for (Part part : this.allParts)
-            if (part.name.contains(partName))
+            if (part.getName().toLowerCase().contains(partName.toLowerCase()))
                 resultList.add(part);
         return resultList;
     }
@@ -53,9 +53,9 @@ public class Inventory {
         if (productName.isBlank()) return this.allProducts;
         ObservableList<Product> resultList = FXCollections.observableArrayList();
         for (Product product : this.allProducts)
-            if (product.name.contains(productName))
+            if (product.getName().toLowerCase().contains(productName.toLowerCase()))
                 resultList.add(product);
-        return null;
+        return resultList;
     }
 
     public void updatePart(int index, Part selectedPart) {

@@ -6,12 +6,16 @@ import edu.wgu.qkm2.data.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class ProductController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ProductController implements Initializable {
     @FXML
     private Label lbTitle;
     @FXML
@@ -35,14 +39,45 @@ public class ProductController {
     @FXML
     private TableView<Part> tvAssociatedParts;
     private final Inventory inventory = Inventory.getInstance();
-    private int currentProductIdx = -1;
+    private int currentProductIdx, id, stock, min, max;
+    private String name;
+    private double price;
     private ObservableList<Part> associatedParts;
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            try {
+                int id = Integer.parseInt(newVal);
+                ObservableList<Part> singleElementList = FXCollections.observableArrayList();
+                singleElementList.add(inventory.lookupPart(id));
+                tvAllParts.setItems(singleElementList);
+            } catch (NumberFormatException e) {
+                tvAllParts.setItems(inventory.lookupPart(newVal));
+            }
+
+        });
+    }
+
     @FXML
-    private void removePart() {
-        var part = tvAssociatedParts.getSelectionModel().getSelectedItem();
-        if (part != null)
-            tvAssociatedParts.getItems().remove(part);
+    private void save() {
+        if (areEntriesValid()) {
+            Product product = new Product(id, name, price, stock, max, min);
+            product.getAllAssociatedParts().clear();
+            product.getAllAssociatedParts().addAll(tvAssociatedParts.getItems());
+            if (currentProductIdx == -1)
+                inventory.addProduct(product);
+            else
+                inventory.updateProduct(currentProductIdx, product);
+            product.getAllAssociatedParts().clear();
+            product.getAllAssociatedParts().addAll(associatedParts);
+            closeStage();
+        }
+    }
+
+    @FXML
+    private void cancel() {
+        closeStage();
     }
 
     @FXML
@@ -53,20 +88,10 @@ public class ProductController {
     }
 
     @FXML
-    private void save() {
-        Product product = extractAllFields();
-        if (currentProductIdx == -1)
-            inventory.addProduct(product);
-        else
-            inventory.updateProduct(currentProductIdx, product);
-        product.getAllAssociatedParts().clear();
-        product.getAllAssociatedParts().addAll(associatedParts);
-        closeStage();
-    }
-
-    @FXML
-    private void cancel() {
-        closeStage();
+    private void removePart() {
+        var part = tvAssociatedParts.getSelectionModel().getSelectedItem();
+        if (part != null)
+            tvAssociatedParts.getItems().remove(part);
     }
 
     private void closeStage() {
@@ -79,8 +104,7 @@ public class ProductController {
         tvAllParts.setItems(inventory.getAllParts());
         if (targetProductIdx == -1) {
             lbTitle.setText("Add Product");
-            int availableId = getAvailableId();
-            tfId.setText(String.valueOf(availableId));
+            tfId.setText(String.valueOf(getAvailableId()));
         } else {
             lbTitle.setText("Modify Product");
             currentProductIdx = targetProductIdx;
@@ -97,20 +121,8 @@ public class ProductController {
         tfMax.clear();
         tfMin.clear();
         associatedParts = FXCollections.observableArrayList();
+        lbError.setText("");
         currentProductIdx = -1;
-    }
-
-    private Product extractAllFields() {
-        int id = Integer.parseInt(tfId.getText());
-        String name = tfName.getText();
-        double price = Double.parseDouble(tfPrice.getText());
-        int stock = Integer.parseInt(tfInventory.getText());
-        int min = Integer.parseInt(tfMin.getText());
-        int max = Integer.parseInt(tfMax.getText());
-        var product = new Product(id, name, price, stock, max, min);
-        product.getAllAssociatedParts().clear();
-        product.getAllAssociatedParts().addAll(tvAssociatedParts.getItems());
-        return product;
     }
 
     private void populateAllFields() {
@@ -122,6 +134,37 @@ public class ProductController {
         tfMax.setText(String.valueOf(product.getMax()));
         tfMin.setText(String.valueOf(product.getMin()));
         associatedParts.addAll(product.getAllAssociatedParts());
+    }
+
+    private boolean areEntriesValid() {
+        String errorPrompt = "";
+        id = Integer.parseInt(tfId.getText());
+        name = tfName.getText();
+        if (name.isBlank()) {
+            errorPrompt += "\t‣ Name field is empty\n";
+        }
+        try {
+            price = Double.parseDouble(tfPrice.getText());
+        } catch (NumberFormatException e) {
+            errorPrompt += "\t‣ Price field must be a valid number\n";
+        }
+        try {
+            stock = Integer.parseInt(tfInventory.getText());
+            min = Integer.parseInt(tfMin.getText());
+            max = Integer.parseInt(tfMax.getText());
+            if (max < min) {
+                errorPrompt += "\t‣ Maximum capacity must be greater than the minimum\n";
+            } else if (!(min < stock && stock < max)) {
+                errorPrompt += "\t‣ Inventory is outside of min/max range\n";
+            }
+        } catch (NumberFormatException e) {
+            errorPrompt += "\t‣ Inventory, min, and max values must be valid numbers\n";
+        }
+        if (!errorPrompt.isBlank())
+            lbError.setText("Error: Storing values has failed\n"
+                    + "Please fix the following issues:\n"
+                    + errorPrompt);
+        return errorPrompt.isBlank();
     }
 
     private int getAvailableId() {

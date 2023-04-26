@@ -1,10 +1,12 @@
 package edu.wgu.qkm2.controller;
 
-import edu.wgu.qkm2.data.InHousePart;
+import edu.wgu.qkm2.InventorySampleDataPopulator;
 import edu.wgu.qkm2.data.Inventory;
 import edu.wgu.qkm2.data.Part;
 import edu.wgu.qkm2.data.Product;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,18 +33,24 @@ public class HomeController implements Initializable {
     private TableView<Part> tvParts;
     @FXML
     private TableView<Product> tvProducts;
-
+    private final Inventory inventory = Inventory.getInstance();
     private final Stage partStage = new Stage();
-    private PartController partController;
-
     private final Stage productStage = new Stage();
+    private PartController partController;
     private ProductController productController;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeScreens();
+        InventorySampleDataPopulator.addSampleData();
+        tvParts.setItems(inventory.getAllParts());
+        tvProducts.setItems(inventory.getAllProducts());
+        initializeSearchFields();
+    }
+
+    private void initializeScreens() {
         FXMLLoader partLoader = new FXMLLoader(getClass().getResource("/edu/wgu/qkm2/part-screen.fxml"));
         FXMLLoader productLoader = new FXMLLoader(getClass().getResource("/edu/wgu/qkm2/product-screen.fxml"));
-
         try {
             Parent partScreen = partLoader.load();
             partController = partLoader.getController();
@@ -55,22 +63,37 @@ public class HomeController implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
-        Inventory inventory = Inventory.getInstance();
-        var part = new InHousePart(
-                1, "Disc", 69.99, 12, 2, 20, 233);
-        inventory.addPart(part);
-        var product = new Product(
-                1, "Disc Brake", 99.99, 10, 15, 5);
-        inventory.addProduct(product);
-        updatePartsTable();
-        updateProductsTable();
+    private void initializeSearchFields() {
+
+        tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            try {
+                int id = Integer.parseInt(newVal);
+                ObservableList<Part> singleElementList = FXCollections.observableArrayList();
+                singleElementList.add(inventory.lookupPart(id));
+                tvParts.setItems(singleElementList);
+            } catch (NumberFormatException e) {
+                tvParts.setItems(inventory.lookupPart(newVal));
+            }
+
+        });
+
+        tfSearchProduct.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            try {
+                int id = Integer.parseInt(newVal);
+                ObservableList<Product> singleElementList = FXCollections.observableArrayList();
+                singleElementList.add(inventory.lookupProduct(id));
+                tvProducts.setItems(singleElementList);
+            } catch (NumberFormatException e) {
+                tvProducts.setItems(inventory.lookupProduct(newVal));
+            }
+        });
     }
 
     @FXML
     private void addPart() {
         partController.updateUI(-1);
-        partStage.setTitle("Add Part");
         partStage.showAndWait();
     }
 
@@ -79,29 +102,29 @@ public class HomeController implements Initializable {
         int index = tvParts.getSelectionModel().getSelectedIndex();
         if (index >= 0) {
             partController.updateUI(index);
-            partStage.setTitle("Modify Screen");
             partStage.showAndWait();
         } else {
             showAlertNoItemSelected();
         }
     }
 
-    private void showAlertNoItemSelected() {
-        var alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Unknown target");
-        alert.setHeaderText("No item been selected");
-        alert.setContentText("Please select the item you wish to modify.");
-        alert.show();
-    }
-
     @FXML
     private void removePart() {
+        var part = tvParts.getSelectionModel().getSelectedItem();
+        if (part != null) {
+            var alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Part deletion");
+            alert.setContentText("Are you sure you want to delete this item?");
+            alert.showAndWait().filter(resp -> resp == ButtonType.OK).ifPresent(
+                    e -> inventory.deletePart(part)
+            );
+        } else
+            showAlertNoItemSelected();
     }
 
     @FXML
     private void addProduct() {
         productController.updateUI(-1);
-        productStage.setTitle("Add Product");
         productStage.showAndWait();
     }
 
@@ -110,7 +133,6 @@ public class HomeController implements Initializable {
         int index = tvProducts.getSelectionModel().getSelectedIndex();
         if (index >= 0) {
             productController.updateUI(index);
-            productStage.setTitle("Modify Product");
             productStage.showAndWait();
         } else {
             showAlertNoItemSelected();
@@ -119,6 +141,23 @@ public class HomeController implements Initializable {
 
     @FXML
     private void removeProduct() {
+        var product = tvProducts.getSelectionModel().getSelectedItem();
+        if (product != null) {
+            if (product.getAllAssociatedParts().size() != 0) {
+                var alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Deletion failed");
+                alert.setHeaderText("This product contains associated parts");
+                alert.setContentText("Remove associated parts within this product before attempting to remove it.");
+                alert.showAndWait();
+            } else {
+                var alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Product deletion");
+                alert.setContentText("Are you sure you want to delete this item?");
+                alert.showAndWait().filter(
+                        resp -> resp == ButtonType.OK).ifPresent(e -> inventory.deleteProduct(product));
+            }
+        } else
+            showAlertNoItemSelected();
     }
 
     @FXML
@@ -132,12 +171,11 @@ public class HomeController implements Initializable {
 
     }
 
-    private void updatePartsTable() {
-        tvParts.setItems(Inventory.getInstance().getAllParts());
-    }
-
-    private void updateProductsTable() {
-        tvProducts.setItems(Inventory.getInstance().getAllProducts());
+    private void showAlertNoItemSelected() {
+        var alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Unknown target");
+        alert.setHeaderText("No item been selected");
+        alert.show();
     }
 
 

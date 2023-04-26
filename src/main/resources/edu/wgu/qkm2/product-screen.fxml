@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 
 <SplitPane dividerPositions="0.4" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-           prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17"
+           prefHeight="500.0" prefWidth="850.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17"
            fx:controller="edu.wgu.qkm2.controller.ProductController">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
         <Label fx:id="lbTitle" alignment="CENTER" text="Add Product" AnchorPane.leftAnchor="0.0"
@@ -61,10 +61,11 @@
                        GridPane.rowIndex="4"/>
             <TextField fx:id="tfMin" maxWidth="200.0" promptText="Min" GridPane.columnIndex="1"
                        GridPane.rowIndex="5"/>
-            <Label fx:id="lbError" textOverrun="CLIP" GridPane.columnSpan="2147483647"
-                   GridPane.rowIndex="6">
+            <Label fx:id="lbError" minHeight="-Infinity" prefHeight="150.0" textOverrun="CLIP" wrapText="true"
+                   GridPane.columnSpan="2147483647" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6"
+                   GridPane.rowSpan="2147483647" GridPane.vgrow="ALWAYS">
                 <GridPane.margin>
-                    <Insets top="48.0"/>
+                    <Insets top="80.0"/>
                 </GridPane.margin>
             </Label>
         </GridPane>

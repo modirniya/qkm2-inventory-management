@@ -4,15 +4,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 public class Product {
-    ObservableList<Part> associatedParts;
-    int id;
-    String name;
-    double price;
-    int stock;
-    int max;
-    int min;
+    private final ObservableList<Part> associatedParts;
+    private int id;
+    private String name;
+    private double price;
+    private int stock;
+    private int max;
+    private int min;
 
-    public Product(int id, String name, double price, int stock, int max, int min) {
+    public Product(int id, String name, double price, int stock, int min, int max) {
         this.id = id;
         this.name = name;
         this.price = price;
