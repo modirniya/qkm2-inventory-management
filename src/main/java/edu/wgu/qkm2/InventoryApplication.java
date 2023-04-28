@@ -9,6 +9,13 @@ import java.io.IOException;
 
 /**
  * @author Parham Modirniya
+ * <p>
+ * FUTURE ENHANCEMENT
+ * Refactor the Inventory class to be an interface and implement different data sources, such as a SQL database as a local cache,
+ * and a RestApi backend as a data backup. This enhancement would allow the application to work seamlessly with different data sources,
+ * providing better data management and availability. By implementing this feature, users could easily switch between different data
+ * sources without the need to modify the application code, and the application could be easily scaled to support larger data sets or
+ * additional functionality.
  */
 public class InventoryApplication extends Application {
     @Override

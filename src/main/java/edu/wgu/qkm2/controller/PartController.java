@@ -271,10 +271,6 @@ public class PartController implements Initializable {
      * and incrementing its ID by 1. It assumes that the part IDs are sequential and that
      * there are no gaps in the numbering.
      * <p>
-     * Future enhancements:
-     * - Implement a more robust ID generation method that can handle non-sequential IDs or
-     * gaps in the numbering.
-     *
      * @return the next available ID for a new part
      */
     private int getAvailableId() {

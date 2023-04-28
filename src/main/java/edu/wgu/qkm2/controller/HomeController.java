@@ -88,12 +88,20 @@ public class HomeController implements Initializable {
     }
 
     /**
+     * RUNTIME ERROR
+     * When looking up a part by name that does not exist,
+     * the list returned by lookupPart() method has a size of 0,
+     * causing an IndexOutOfBoundsException when trying to access its first
+     * element with list.get(0) == null. To fix this, a check was added to
+     * the condition that sets the Part table view items.
+     * <p>
      * Initializes the search fields and adds listeners to them.
      * The listeners detect changes in the text fields and update the table views accordingly.
      * If the search text can be parsed to an integer, it calls the lookupPart() or lookupProduct() method
      * on the inventory instance and sets the result in the corresponding table view.
      * If it cannot be parsed to an integer, it will perform a string search using lookupPart() or lookupProduct()
      * and update the table view with the search results.
+     * </p>
      */
     private void initializeSearchFields() {
         tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
