@@ -1,24 +1,25 @@
 package edu.wgu.qkm2.controller;
 
-import edu.wgu.qkm2.data.Inventory;
 import edu.wgu.qkm2.data.Part;
 import edu.wgu.qkm2.data.Product;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static edu.wgu.qkm2.data.Inventory.*;
+
 /**
  * @author Parham Modirniya
  */
 public class ProductController implements Initializable {
+    @FXML
+    private Label lbPartNotFound;
     @FXML
     private Label lbTitle;
     @FXML
@@ -41,7 +42,6 @@ public class ProductController implements Initializable {
     private TableView<Part> tvAllParts;
     @FXML
     private TableView<Part> tvAssociatedParts;
-    private final Inventory inventory = Inventory.getInstance();
     private int currentProductIdx, id, stock, min, max;
     private String name;
     private double price;
@@ -63,15 +63,16 @@ public class ProductController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            ObservableList<Part> list = FXCollections.observableArrayList();
             try {
                 int id = Integer.parseInt(newVal);
-                ObservableList<Part> singleElementList = FXCollections.observableArrayList();
-                singleElementList.add(inventory.lookupPart(id));
-                tvAllParts.setItems(singleElementList);
+                list.add(lookupPart(id));
+                tvAllParts.setItems(list);
             } catch (NumberFormatException e) {
-                tvAllParts.setItems(inventory.lookupPart(newVal));
+                list = lookupPart(newVal);
+                tvAllParts.setItems(list);
             }
-
+            lbPartNotFound.setVisible(list.size() == 0 || list.get(0) == null);
         });
     }
 
@@ -86,13 +87,13 @@ public class ProductController implements Initializable {
     @FXML
     private void save() {
         if (areEntriesValid()) {
-            Product product = new Product(id, name, price, stock, max, min);
+            Product product = new Product(id, name, price, stock, min, max);
             product.getAllAssociatedParts().clear();
             product.getAllAssociatedParts().addAll(tvAssociatedParts.getItems());
             if (currentProductIdx == -1)
-                inventory.addProduct(product);
+                addProduct(product);
             else
-                inventory.updateProduct(currentProductIdx, product);
+                updateProduct(currentProductIdx, product);
             product.getAllAssociatedParts().clear();
             product.getAllAssociatedParts().addAll(associatedParts);
             closeStage();
@@ -126,8 +127,19 @@ public class ProductController implements Initializable {
     @FXML
     private void removePart() {
         var part = tvAssociatedParts.getSelectionModel().getSelectedItem();
-        if (part != null)
-            tvAssociatedParts.getItems().remove(part);
+        if (part != null) {
+            var alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Part deletion");
+            alert.setContentText("Are you sure you want to delete this item?");
+            alert.showAndWait().filter(resp -> resp == ButtonType.OK).ifPresent(
+                    e -> tvAssociatedParts.getItems().remove(part)
+            );
+        } else {
+            var alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Unknown target");
+            alert.setHeaderText("No item been selected");
+            alert.show();
+        }
     }
 
     /**
@@ -147,7 +159,7 @@ public class ProductController implements Initializable {
      */
     public void updateUI(int targetProductIdx) {
         clearAllFields();
-        tvAllParts.setItems(inventory.getAllParts());
+        tvAllParts.setItems(getAllParts());
         if (targetProductIdx == -1) {
             lbTitle.setText("Add Product");
             tfId.setText(String.valueOf(getAvailableId()));
@@ -182,7 +194,7 @@ public class ProductController implements Initializable {
      * for ID, name, price, inventory, min, and max, as well as populating the associated parts list.
      */
     private void populateAllFields() {
-        var product = inventory.getAllProducts().get(currentProductIdx);
+        var product = getAllProducts().get(currentProductIdx);
         tfId.setText(String.valueOf(product.getId()));
         tfName.setText(product.getName());
         tfPrice.setText(String.valueOf(product.getPrice()));
@@ -237,8 +249,8 @@ public class ProductController implements Initializable {
      * @return the next available ID for a new product
      */
     private int getAvailableId() {
-        var size = inventory.getAllProducts().size();
-        var lastElement = inventory.getAllProducts().get(size - 1);
+        var size = getAllProducts().size();
+        var lastElement = getAllProducts().get(size - 1);
         return lastElement.getId() + 1;
     }
 }

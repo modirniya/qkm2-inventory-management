@@ -19,6 +19,7 @@ public class InventoryApplication extends Application {
         stage.show();
     }
 
+    // Javadoc at "qkm2-inventory-management/Javadoc"
     public static void main(String[] args) {
         launch();
     }

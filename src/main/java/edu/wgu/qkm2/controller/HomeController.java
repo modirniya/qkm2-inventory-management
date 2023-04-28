@@ -1,7 +1,6 @@
 package edu.wgu.qkm2.controller;
 
 import edu.wgu.qkm2.InventorySampleDataPopulator;
-import edu.wgu.qkm2.data.Inventory;
 import edu.wgu.qkm2.data.Part;
 import edu.wgu.qkm2.data.Product;
 import javafx.application.Platform;
@@ -12,10 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -23,11 +19,16 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import static edu.wgu.qkm2.data.Inventory.*;
+
 /**
  * @author Parham Modirniya
  */
 public class HomeController implements Initializable {
-
+    @FXML
+    private Label lbPartNotFound;
+    @FXML
+    private Label lbProductNotFound;
     @FXML
     private TextField tfSearchPart;
     @FXML
@@ -36,7 +37,6 @@ public class HomeController implements Initializable {
     private TableView<Part> tvParts;
     @FXML
     private TableView<Product> tvProducts;
-    private final Inventory inventory = Inventory.getInstance();
     private final Stage partStage = new Stage();
     private final Stage productStage = new Stage();
     private PartController partController;
@@ -55,8 +55,8 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeScreens();
         InventorySampleDataPopulator.addSampleData();
-        tvParts.setItems(inventory.getAllParts());
-        tvProducts.setItems(inventory.getAllProducts());
+        tvParts.setItems(getAllParts());
+        tvProducts.setItems(getAllProducts());
         initializeSearchFields();
     }
 
@@ -97,25 +97,28 @@ public class HomeController implements Initializable {
      */
     private void initializeSearchFields() {
         tfSearchPart.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            ObservableList<Part> list = FXCollections.observableArrayList();
             try {
                 int id = Integer.parseInt(newVal);
-                ObservableList<Part> singleElementList = FXCollections.observableArrayList();
-                singleElementList.add(inventory.lookupPart(id));
-                tvParts.setItems(singleElementList);
+                list.add(lookupPart(id));
+                tvParts.setItems(list);
             } catch (NumberFormatException e) {
-                tvParts.setItems(inventory.lookupPart(newVal));
+                list = lookupPart(newVal);
+                tvParts.setItems(list);
             }
-
+            lbPartNotFound.setVisible(list.size() == 0 || list.get(0) == null);
         });
         tfSearchProduct.textProperty().addListener((observableValue, oldVal, newVal) -> {
+            ObservableList<Product> list = FXCollections.observableArrayList();
             try {
                 int id = Integer.parseInt(newVal);
-                ObservableList<Product> singleElementList = FXCollections.observableArrayList();
-                singleElementList.add(inventory.lookupProduct(id));
-                tvProducts.setItems(singleElementList);
+                list.add(lookupProduct(id));
+                tvProducts.setItems(list);
             } catch (NumberFormatException e) {
-                tvProducts.setItems(inventory.lookupProduct(newVal));
+                list = lookupProduct(newVal);
+                tvProducts.setItems(list);
             }
+            lbProductNotFound.setVisible(list.size() == 0 || list.get(0) == null);
         });
     }
 
@@ -158,7 +161,7 @@ public class HomeController implements Initializable {
             alert.setTitle("Part deletion");
             alert.setContentText("Are you sure you want to delete this item?");
             alert.showAndWait().filter(resp -> resp == ButtonType.OK).ifPresent(
-                    e -> inventory.deletePart(part)
+                    e -> deletePart(part)
             );
         } else
             showAlertNoItemSelected();
@@ -211,7 +214,7 @@ public class HomeController implements Initializable {
                 alert.setTitle("Product deletion");
                 alert.setContentText("Are you sure you want to delete this item?");
                 alert.showAndWait().filter(
-                        resp -> resp == ButtonType.OK).ifPresent(e -> inventory.deleteProduct(product));
+                        resp -> resp == ButtonType.OK).ifPresent(e -> deleteProduct(product));
             }
         } else
             showAlertNoItemSelected();

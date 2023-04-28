@@ -1,7 +1,6 @@
 package edu.wgu.qkm2.controller;
 
 import edu.wgu.qkm2.data.InHouse;
-import edu.wgu.qkm2.data.Inventory;
 import edu.wgu.qkm2.data.Outsourced;
 import edu.wgu.qkm2.data.Part;
 import javafx.fxml.FXML;
@@ -13,6 +12,8 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static edu.wgu.qkm2.data.Inventory.*;
 
 /**
  * @author Parham Modirniya
@@ -50,7 +51,6 @@ public class PartController implements Initializable {
     }
 
     private PartType currentPartType = PartType.IN_HOUSE;
-    private final Inventory inventory = Inventory.getInstance();
     private int currentPartIdx, id, stock, min, max, machineId;
     private String name, companyName;
     private double price;
@@ -94,9 +94,9 @@ public class PartController implements Initializable {
             else
                 part = new Outsourced(id, name, price, stock, min, max, companyName);
             if (currentPartIdx == -1)
-                inventory.addPart(part);
+                addPart(part);
             else
-                inventory.updatePart(currentPartIdx, part);
+                updatePart(currentPartIdx, part);
             closeStage();
         }
     }
@@ -194,7 +194,7 @@ public class PartController implements Initializable {
      * set accordingly, and the Machine ID or Company Name field is populated based on the part type.
      */
     private void populateAllFields() {
-        var product = inventory.getAllParts().get(currentPartIdx);
+        var product = getAllParts().get(currentPartIdx);
         tfId.setText(String.valueOf(product.getId()));
         tfName.setText(product.getName());
         tfPrice.setText(String.valueOf(product.getPrice()));
@@ -278,8 +278,8 @@ public class PartController implements Initializable {
      * @return the next available ID for a new part
      */
     private int getAvailableId() {
-        var size = inventory.getAllParts().size();
-        var lastElement = inventory.getAllParts().get(size - 1);
+        var size = getAllParts().size();
+        var lastElement = getAllParts().get(size - 1);
         return lastElement.getId() + 1;
     }
 

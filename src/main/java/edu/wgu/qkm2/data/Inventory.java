@@ -7,40 +7,17 @@ import javafx.collections.ObservableList;
  * @author Parham Modirniya
  */
 public class Inventory {
-    private final ObservableList<Part> allParts;
-    private final ObservableList<Product> allProducts;
+    private static final ObservableList<Part> allParts = FXCollections.observableArrayList();
+    private static final ObservableList<Product> allProducts = FXCollections.observableArrayList();
 
-    /**
-     * A private constructor for the Inventory class.
-     * Initializes the allParts and allProducts lists with empty observable array lists.
-     */
-    private Inventory() {
-        this.allParts = FXCollections.observableArrayList();
-        this.allProducts = FXCollections.observableArrayList();
-    }
-
-    /**
-     * Singleton instance of the {@link Inventory} class.
-     * This instance is created at the time the class is loaded and is accessed by calling this static variable.
-     */
-    private static final Inventory instance = new Inventory();
-
-    /**
-     * Returns the single instance of the Inventory class. If no instance of Inventory exists, one will be created.
-     *
-     * @return the single instance of the Inventory class.
-     */
-    public static Inventory getInstance() {
-        return instance;
-    }
 
     /**
      * Adds a new part to the inventory.
      *
      * @param newPart the part to add
      */
-    public void addPart(Part newPart) {
-        this.allParts.add(newPart);
+    public static void addPart(Part newPart) {
+        allParts.add(newPart);
     }
 
     /**
@@ -48,8 +25,8 @@ public class Inventory {
      *
      * @param newProduct the Product object to be added to the inventory
      */
-    public void addProduct(Product newProduct) {
-        this.allProducts.add(newProduct);
+    public static void addProduct(Product newProduct) {
+        allProducts.add(newProduct);
     }
 
     /**
@@ -58,8 +35,8 @@ public class Inventory {
      * @param partId the ID of the Part to look up
      * @return the Part object with the specified ID, or null if not found
      */
-    public Part lookupPart(int partId) {
-        for (Part part : this.allParts)
+    public static Part lookupPart(int partId) {
+        for (Part part : allParts)
             if (part.getId() == partId)
                 return part;
         return null;
@@ -71,8 +48,8 @@ public class Inventory {
      * @param productId the ID of the {@link Product} to lookup
      * @return the found {@link Product} or null if not found
      */
-    public Product lookupProduct(int productId) {
-        for (Product product : this.allProducts)
+    public static Product lookupProduct(int productId) {
+        for (Product product : allProducts)
             if (product.getId() == productId)
                 return product;
         return null;
@@ -85,10 +62,10 @@ public class Inventory {
      * @param partName the string to search for in the names of the parts
      * @return an observable list of parts that contain partName in their names
      */
-    public ObservableList<Part> lookupPart(String partName) {
-        if (partName.isBlank()) return this.allParts;
+    public static ObservableList<Part> lookupPart(String partName) {
+        if (partName.isBlank()) return allParts;
         ObservableList<Part> resultList = FXCollections.observableArrayList();
-        for (Part part : this.allParts)
+        for (Part part : allParts)
             if (part.getName().toLowerCase().contains(partName.toLowerCase()))
                 resultList.add(part);
         return resultList;
@@ -101,10 +78,10 @@ public class Inventory {
      * @param productName the name of the product to search for.
      * @return an ObservableList of products containing the provided name or all products if the provided name is blank.
      */
-    public ObservableList<Product> lookupProduct(String productName) {
-        if (productName.isBlank()) return this.allProducts;
+    public static ObservableList<Product> lookupProduct(String productName) {
+        if (productName.isBlank()) return allProducts;
         ObservableList<Product> resultList = FXCollections.observableArrayList();
-        for (Product product : this.allProducts)
+        for (Product product : allProducts)
             if (product.getName().toLowerCase().contains(productName.toLowerCase()))
                 resultList.add(product);
         return resultList;
@@ -116,8 +93,8 @@ public class Inventory {
      * @param index        the index of the part to be updated
      * @param selectedPart the updated part object to replace the existing part
      */
-    public void updatePart(int index, Part selectedPart) {
-        this.allParts.set(index, selectedPart);
+    public static void updatePart(int index, Part selectedPart) {
+        allParts.set(index, selectedPart);
     }
 
     /**
@@ -126,8 +103,8 @@ public class Inventory {
      * @param index           The index of the product to update.
      * @param selectedProduct The updated product to replace the existing product at the given index.
      */
-    public void updateProduct(int index, Product selectedProduct) {
-        this.allProducts.set(index, selectedProduct);
+    public static void updateProduct(int index, Product selectedProduct) {
+        allProducts.set(index, selectedProduct);
     }
 
     /**
@@ -136,8 +113,8 @@ public class Inventory {
      * @param selectedPart The Part to be deleted.
      * @return true if the Part was found and removed from the inventory, false otherwise.
      */
-    public boolean deletePart(Part selectedPart) {
-        return this.allParts.remove(selectedPart);
+    public static boolean deletePart(Part selectedPart) {
+        return allParts.remove(selectedPart);
     }
 
     /**
@@ -146,8 +123,8 @@ public class Inventory {
      * @param selectedProduct the product to remove
      * @return true if the product was successfully removed, false otherwise
      */
-    public boolean deleteProduct(Product selectedProduct) {
-        return this.allProducts.remove(selectedProduct);
+    public static boolean deleteProduct(Product selectedProduct) {
+        return allProducts.remove(selectedProduct);
     }
 
     /**
@@ -155,8 +132,8 @@ public class Inventory {
      *
      * @return the ObservableList of all parts in the inventory
      */
-    public ObservableList<Part> getAllParts() {
-        return this.allParts;
+    public static ObservableList<Part> getAllParts() {
+        return allParts;
     }
 
     /**
@@ -164,7 +141,7 @@ public class Inventory {
      *
      * @return an observable list of all products in the inventory.
      */
-    public ObservableList<Product> getAllProducts() {
-        return this.allProducts;
+    public static ObservableList<Product> getAllProducts() {
+        return allProducts;
     }
 }

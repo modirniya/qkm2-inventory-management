@@ -2,6 +2,9 @@ package edu.wgu.qkm2;
 
 import edu.wgu.qkm2.data.*;
 
+import static edu.wgu.qkm2.data.Inventory.addPart;
+import static edu.wgu.qkm2.data.Inventory.addProduct;
+
 /**
  * @author Parham Modirniya
  */
@@ -11,7 +14,6 @@ public class InventorySampleDataPopulator {
      * associates parts with products and adds them to the inventory.
      */
     public static void addSampleData() {
-        Inventory inventory = Inventory.getInstance();
 
         // An array containing all the parts
         Part[] parts = {
@@ -29,7 +31,7 @@ public class InventorySampleDataPopulator {
 
         // Loop through the array and add each part to the inventory
         for (Part part : parts) {
-            inventory.addPart(part);
+            addPart(part);
         }
 
         Product[] products = {
@@ -68,7 +70,7 @@ public class InventorySampleDataPopulator {
 
 // Add products to the inventory
         for (Product product : products) {
-            inventory.addProduct(product);
+            addProduct(product);
         }
 
     }
