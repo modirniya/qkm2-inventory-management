@@ -83,6 +83,9 @@ public class ProductController implements Initializable {
      * TableView to the Product. If the currentProductIdx is -1, the method adds the new product to
      * the inventory; otherwise, it updates the existing product in the inventory. Finally, it clears
      * the associated parts list and closes the stage.
+     *
+     * <p><b>LOGICAL ERROR:</b> The order of the {@code max} and {@code min} parameters passed to the {@code Product} constructor was incorrect,
+     * which could lead to unexpected behavior when creating or updating a product. This error has been corrected by swapping the order of these parameters.</p>
      */
     @FXML
     private void save() {

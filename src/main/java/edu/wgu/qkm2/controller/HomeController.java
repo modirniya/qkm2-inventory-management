@@ -92,8 +92,8 @@ public class HomeController implements Initializable {
      * When looking up a part by name that does not exist,
      * the list returned by lookupPart() method has a size of 0,
      * causing an IndexOutOfBoundsException when trying to access its first
-     * element with list.get(0) == null. To fix this, a check was added to
-     * the condition that sets the Part table view items.
+     * element with list.get(0) == null. To fix this, a condition was added to
+     * that checks if list is not empty.
      * <p>
      * Initializes the search fields and adds listeners to them.
      * The listeners detect changes in the text fields and update the table views accordingly.
